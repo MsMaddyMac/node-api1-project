@@ -24,6 +24,30 @@ server.get('/users', (req, res) => {
     })
 })
 
+// client makes a GET request to get user by id /api/users/:id
+server.get('/users/:id', (req, res) => {
+    const id = req.params.id;
+
+    // if the user with specified ID is not found, return status code (404) (NOT FOUND)
+    // return JSON object: { message: 'The user with the specified ID does not exist.' }
+    db.findById(id)
+    .then(users => {
+        if(users) {
+           res.status(200).json(users) 
+        } else {
+            res.status(404).json({ message: 'The user with the specified ID does not exist.' })
+        }
+    })
+    // if error retrieving the user from the database, cancel request, respond with status code 500.
+    // return JSON object: { error: 'The user information could not be retrieved.' }
+    .catch(err => {
+        console.log('error on GET by ID /users/:id', err);
+        res.status(500).json({ error: 'The user information could not be retrieved.' })
+    })
+})
+
+
+
 
 
 // creates a function to have the api return a message once it is successfully listening on the specified port 
