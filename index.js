@@ -46,6 +46,39 @@ server.get('/users/:id', (req, res) => {
     })
 })
 
+// client makes a POST request to add new user to /api/users 
+server.post('/users', (req, res) => {
+    const userData = req.body;
+
+    // if the request body is missing the name or bio property, cancel request, respond with http status code 400 (BAD REQUEST)
+    // return JSON response: { errorMessage: 'Please provide name and bio for the user.' }
+    // if the info is valid, save the new user to the database
+    // return status code 201 (Created)
+    // return the newly created user document
+    // if error while saving new user, cancel request
+    // respond with status code 500 (SERVOR ERROR)
+    // return JSON object { error: 'There was an error while saving the user to the database.' }
+    if (!userData.name || !userData.bio) {
+        res
+            .status(400)
+            .json({ errorMessage: 'Please provide name and bio for the user.' })
+    } else {
+        db
+            .insert(userData)
+            .then (user => {
+            res.status(201).json(user);
+        })
+        .catch(err => {
+            console.log('error on POST /users', err)
+            res.status(500).json({ error: 'There was an error while saving the user to the database.' })
+        })
+    }
+    
+})
+
+
+
+
 
 
 
