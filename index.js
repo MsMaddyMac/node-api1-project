@@ -97,8 +97,44 @@ server.delete('/users/:id', (req, res) => {
     })
 })
 
+// client makes a PUT request to update existingUser to /api/users/:id endpoint
+server.put('/users/:id', (req, res) => {
+    const id = req.params.id;
+    const userData = req.body;
 
+    db.findById(id)
+    .then(users => {
+        if(!users) {
+            res.status(404).json({ message: 'The user with the specified ID does not exist.' })
+        } 
+    })
+    if (!userData.name || !userData.bio) {
+        res
+            .status(400)
+            .json({ errorMessage: 'Please provide name and bio for the user.' })
+    } else {
+        db
+            .update(id, userData)
+            .then (user => {
+            res.status(200).json({user:`user ${id} was updated `});
+        })
+        .catch(err => {
+            console.log('error on PUT /users/:id', err)
+            res.status(500).json({ error: 'The user information could not be modified.' })
+        })
+    } 
+})
+// if the user with the specified id is not found, return status code 404
+// return JSON object: { message: 'The user with the specified ID does not exist.' }
+// if request body is missing name or bio property, cancel request, respond with status code 400
+// return JSON { errorMessage: 'Please provide name and bio for the user.' }
 
+// if error when updating the user, cancel request, respond with status code 500
+// return JSON object: { error: 'The user information could not be modified.' }
+
+// if user is found and new info is valid, update the user document in database with new information sent in the request body
+// return status code 200
+// return newly updated user document
 
 
 
