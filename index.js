@@ -102,12 +102,22 @@ server.put('/users/:id', (req, res) => {
     const id = req.params.id;
     const userData = req.body;
 
+
+    // if the user with the specified id is not found, return status code 404
+    // return JSON object: { message: 'The user with the specified ID does not exist.' }
     db.findById(id)
     .then(users => {
         if(!users) {
             res.status(404).json({ message: 'The user with the specified ID does not exist.' })
         } 
     })
+    // if request body is missing name or bio property, cancel request, respond with status code 400
+    // return JSON { errorMessage: 'Please provide name and bio for the user.' }
+    // if user is found and new info is valid, update the user document in database with new information sent in the request body
+    // return status code 200
+    // return newly updated user document
+    // if error when updating the user, cancel request, respond with status code 500
+    // return JSON object: { error: 'The user information could not be modified.' }
     if (!userData.name || !userData.bio) {
         res
             .status(400)
@@ -124,21 +134,6 @@ server.put('/users/:id', (req, res) => {
         })
     } 
 })
-// if the user with the specified id is not found, return status code 404
-// return JSON object: { message: 'The user with the specified ID does not exist.' }
-// if request body is missing name or bio property, cancel request, respond with status code 400
-// return JSON { errorMessage: 'Please provide name and bio for the user.' }
-
-// if error when updating the user, cancel request, respond with status code 500
-// return JSON object: { error: 'The user information could not be modified.' }
-
-// if user is found and new info is valid, update the user document in database with new information sent in the request body
-// return status code 200
-// return newly updated user document
-
-
-
-
 // creates a function to have the api return a message once it is successfully listening on the specified port 
 const port = 4000;
 server.listen(port, () => console.log(`API listening on port ${port}!`));
