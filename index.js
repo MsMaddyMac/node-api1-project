@@ -102,7 +102,6 @@ server.put('/users/:id', (req, res) => {
     const id = req.params.id;
     const userData = req.body;
 
-
     // if the user with the specified id is not found, return status code 404
     // return JSON object: { message: 'The user with the specified ID does not exist.' }
     db.findById(id)
