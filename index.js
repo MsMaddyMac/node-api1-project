@@ -72,10 +72,30 @@ server.post('/users', (req, res) => {
             console.log('error on POST /users', err)
             res.status(500).json({ error: 'There was an error while saving the user to the database.' })
         })
-    }
-    
+    } 
 })
 
+// client makes a DELETE request to delete a user from /api/users/:id
+// user specified with id is not found, return status code 404 (Not Found)
+// return JSON object { message: 'The user with the specified ID does not exist.' }
+server.delete('/users/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.remove(id)
+    .then(users => {
+        if(users) {
+            res.status(200).json({ message: 'The user was removed.' });
+        } else {
+            res.status(404).json({ message: 'The user with the specified ID does not exist.' });
+        }
+    })
+    // error in removing the user from the database, cancel request, respond with status code 500
+    // return JSON object: { error: 'The user could not be removed.' }
+    .catch(err => {
+        console.log('error on DELETE /users/:id', err);
+        res.status(500).json({ error: 'The user could not be removed.' })
+    })
+})
 
 
 
